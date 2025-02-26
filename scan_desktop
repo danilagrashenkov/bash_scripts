@@ -1,0 +1,8 @@
+#!/bin/bash
+
+for n in ~/Music/*
+do 
+  if [ -f "$n" ]; then
+    vt file $(md5sum "$n" | cut -f 1 -d " ") --include=creation_date,first_submission_date,last_analysis_date,meaningful_name,total_votes.*
+  fi
+done

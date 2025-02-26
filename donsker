@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+
+import time
+import numpy as np
+import matplotlib.pyplot as plt
+import sys
+import random
+import seaborn as sns
+sns.set_style('darkgrid')
+import math
+np.random.seed(123)
+
+# generating data values
+x = [0]
+scaled = [0]
+xscaled = [0]
+
+def on_close(event):
+    print("\nDonsker's Theorem (also known as Donsker's invariance principle, or the functional central limit theorem)")
+    print('\nClosed Figure!')
+    sys.exit(0)
+
+# enable interactive mode
+plt.ion()
+
+# creating plot and figure
+fig = plt.figure()
+ax = plt.axes()
+
+fig.canvas.mpl_connect('close_event', on_close)
+
+# set limits
+plt.ylim(-3,3) 
+plt.xlim(0,1)
+
+# setting labels
+plt.xlabel("time")
+plt.ylabel('$W^n(t)$')
+plt.title("Brownian Motion approximated by Random Walk with n steps")
+plt.axhline(lw=0.5, color='black')
+
+temporaryPoints, = ax.plot(xscaled, scaled,  linestyle='--', marker='.', color = 'green')
+
+props = dict(boxstyle='round', facecolor='blue', alpha=0.1)
+textstr = f'n={0}'
+text = fig.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=14,
+        verticalalignment='top', bbox=props)
+
+# looping
+n=0
+while True:
+# for i in range(100):
+   
+    # add something to axes
+    temporaryPoints.remove()
+    temporaryPoints, = ax.plot(xscaled, scaled,  linestyle='--', color = 'green')
+    
+    text.remove()
+    textstr = f'n={n}'
+    text = fig.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=14,
+        verticalalignment='top', bbox=props)
+    
+    # updating the value of x and y
+    x = x + [random.gauss(0,1)]
+    walk = np.cumsum(x)
+    n = len(walk)
+    scaled = [0] + [ (walk[k]/math.sqrt(n)) for k in range(1,n)]
+    xscaled = [k/n for k in range(0,n)]
+
+    # re-drawing the figure
+    fig.canvas.draw()
+
+    # to flush the GUI events
+    fig.canvas.flush_events()
+    time.sleep(0.000001) #is necessary for the plot to update for some reason
+
+    # start removing points if you don't want all shown
+    # if i>50:
+    #     ax.lines[0].remove()
+    #     ax.collections[0].remove()       

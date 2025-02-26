@@ -1,0 +1,9 @@
+#!/bin/bash
+
+state=$(rfkill | grep hci0 | cut -d' ' -f18- | head -c 2)
+
+if [[ $state == un ]]; then
+	rfkill block bluetooth
+else
+	rfkill unblock bluetooth
+fi
